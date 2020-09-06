@@ -5,25 +5,24 @@ require 'pry'
 # returns a new Array.
 # Its members will be a mix of the item Hashes and, where applicable, the "ITEM W/COUPON" Hash.
 def apply_coupons(cart, coupons)
-  couponed_item = {}
-  cart << couponed_item
-  cart.each do |item_hash|
-  counter = 0
-  while counter < coupons.length
-      item_lookup = find_item_by_name_in_collection(coupons[counter][:item],cart)
-    if item_lookup && item_lookup[:count] >= coupons[counter][:num]
-      couponed_item[:item] = coupons[counter][:item] + " W/COUPON"
-      couponed_item[:price] = (coupons[counter][:cost] / coupons[counter][:num])
-      couponed_item[:clearance] = item_hash[:clearance]
-      couponed_item[:count] = item_hash[:count]
-      item_hash[:count] -= coupons[counter][:num]
-      # binding.pry
-      counter += 1
-      end
+  i = 0
+  coupons.each do |coupon|
+    item_with_coupon = find_item_by_name_in_collection(coupon[:item], cart)
+    item_is_in_basket = !!item_with_coupon
+    count_is_big_enough_to_apply = item_is_in_basket && item_with_coupon[:count] >= coupon[:num]
+    if item_is_in_basket and count_is_big_enough_to_apply
+      cart << { item: "#{item_with_coupon[:item]} W/COUPON",
+                price: coupon[:cost] / coupon[:num],
+                clearance: item_with_coupon[:clearance],
+                count: coupon[:num]
+              }
+      item_with_coupon[:count] -= coupon[:num]
     end
+    i += 1
   end
   cart
 end
+
 
 
   # REMEMBER: This method **should** update cart
