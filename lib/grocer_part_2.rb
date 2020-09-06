@@ -40,14 +40,14 @@ def checkout(cart, coupons)
   consolidated_cart = consolidate_cart(cart)
   applied_coupons = apply_coupons(consolidated_cart, coupons)
   final_cart = apply_clearance(applied_coupons)
-  # total_price = 0
+  total_price = 0
   counter = 0
   while counter < final_cart.length
     total_price += (final_cart[counter][:price] * final_cart[counter][:count])
     counter += 1
   end
-  # if total_price > $100
-  #   total_price = (total_price * 0.9).round(2)
-  # end
+  if total_price > $100
+    total_price = (total_price * 0.9).round(2)
+  end
   total_price
 end
